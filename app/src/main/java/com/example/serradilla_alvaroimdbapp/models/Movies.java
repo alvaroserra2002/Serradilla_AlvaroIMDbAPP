@@ -1,49 +1,31 @@
 package com.example.serradilla_alvaroimdbapp.models;
 
-import java.util.Date;
-
 public class Movies {
+    private String id;
     private String name;
-    private String text;
-    private double raiting;
-    private Date realising;
+    private String imageUrl;
 
-    public Movies(String name, String text, double raiting, Date realising) {
+    public Movies(String id, String name, String imageUrl) {
+        this.id = id;
         this.name = name;
-        this.text = text;
-        this.raiting = raiting;
-        this.realising = realising;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public double getRaiting() {
-        return raiting;
-    }
-
-    public void setRaiting(double raiting) {
-        this.raiting = raiting;
-    }
-
-    public Date getRealising() {
-        return realising;
-    }
-
-    public void setRealising(Date realising) {
-        this.realising = realising;
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
+
+
+
+
+
+
