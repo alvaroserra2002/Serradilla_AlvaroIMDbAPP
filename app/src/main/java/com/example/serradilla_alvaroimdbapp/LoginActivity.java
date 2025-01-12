@@ -24,21 +24,17 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        // Configurar Google Sign-In
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        // Verificar si ya hay un usuario autenticado
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
-            // Usuario ya autenticado, redirigir a MainActivity
             redirectToMainActivity(account);
         }
 
-        // Configurar botón de inicio de sesión
         findViewById(R.id.googleBtn).setOnClickListener(v -> signInWithGoogle());
 
         SignInButton googleSignInButton = findViewById(R.id.googleBtn);

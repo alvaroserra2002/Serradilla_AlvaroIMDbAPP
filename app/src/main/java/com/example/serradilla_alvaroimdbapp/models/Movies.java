@@ -29,7 +29,7 @@ public class Movies {
         return name;
     }
 
-    public float getRating(){
+    public float getRating() {
         return rating;
     }
 
@@ -41,6 +41,7 @@ public class Movies {
         return plot;
     }
 }
+
 
 
 

@@ -79,7 +79,6 @@ public class FavoritosDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
     public List<Movies> getFavoritos() {
         List<Movies> favoritosList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -92,20 +91,22 @@ public class FavoritosDatabaseHelper extends SQLiteOpenHelper {
             int imageIndex = cursor.getColumnIndex(COLUMN_IMAGE);
             int plotIndex = cursor.getColumnIndex(COLUMN_PLOT);
 
-            do {
-                String id = cursor.getString(idIndex);
-                String name = cursor.getString(nameIndex);
-                float rating = cursor.getFloat(ratingIndex);
-                String image = cursor.getString(imageIndex);
-                String plot = cursor.getString(plotIndex);
+            if (idIndex != -1 && nameIndex != -1 && ratingIndex != -1 && imageIndex != -1 && plotIndex != -1) {
+                do {
+                    String id = cursor.getString(idIndex);
+                    String name = cursor.getString(nameIndex);
+                    float rating = cursor.getFloat(ratingIndex);
+                    String image = cursor.getString(imageIndex);
+                    String plot = cursor.getString(plotIndex);
 
-                favoritosList.add(new Movies(id, name, rating, image, plot));
-            } while (cursor.moveToNext());
-
+                    favoritosList.add(new Movies(id, name, rating, image, plot));
+                } while (cursor.moveToNext());
+            }
             cursor.close();
         }
         db.close();
         return favoritosList;
     }
 }
+
 

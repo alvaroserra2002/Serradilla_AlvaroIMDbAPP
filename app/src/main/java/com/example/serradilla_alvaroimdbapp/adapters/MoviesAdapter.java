@@ -66,7 +66,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             FavoritosDatabaseHelper dbHelper = new FavoritosDatabaseHelper(context);
             boolean isFavorito = false;
 
-            // Verificar si la película ya está en favoritos
             List<Movies> favoritosList = dbHelper.getFavoritos();
             for (Movies favorito : favoritosList) {
                 if (favorito.getId().equals(movie.getId())) {
@@ -76,11 +75,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             }
 
             if (isFavorito) {
-                // Eliminar de favoritos
                 dbHelper.removeFavorito(movie.getId());
                 Toast.makeText(context, "Eliminada de favoritos: " + movie.getName(), Toast.LENGTH_SHORT).show();
             } else {
-                // Agregar a favoritos
                 ApiService apiService = ApiClient.getClient().create(ApiService.class);
                 Call<MovieDetails> call = apiService.getMovieDetails(API_KEY, API_HOST, movie.getId());
 

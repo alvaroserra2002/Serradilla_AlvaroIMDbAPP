@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -38,6 +39,9 @@ import android.widget.Toast;
 
 import com.example.serradilla_alvaroimdbapp.api.ApiClient;
 import com.example.serradilla_alvaroimdbapp.api.ApiService;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -101,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
         logoutButton.setOnClickListener(v -> logout());
 
-        // Actualizar AppBarConfiguration con "Favoritos"
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.fav)
                 .setOpenableLayout(drawer)
@@ -111,45 +114,66 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // Configurar el listener del NavigationView
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            // Referencias a los elementos del diseño
             RecyclerView recyclerViewTop10 = findViewById(R.id.recyclerView);
             RecyclerView recyclerViewFavoritos = findViewById(R.id.recyclerViewFavoritos);
             TextView textViewEmpty = findViewById(R.id.textViewEmpty);
+            Button buttonShare = findViewById(R.id.buttonShare);
 
             if (id == R.id.nav_home) {
-                // Mostrar el RecyclerView del Top 10
                 recyclerViewTop10.setVisibility(View.VISIBLE);
                 recyclerViewFavoritos.setVisibility(View.GONE);
                 textViewEmpty.setVisibility(View.GONE);
+                buttonShare.setVisibility(View.GONE);
 
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle("Top 10");
                 }
                 Toast.makeText(this, "Cargando Top 10", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.fav) {
-                // Mostrar el RecyclerView de Favoritos
                 recyclerViewTop10.setVisibility(View.GONE);
 
-                // Configurar el RecyclerView para Favoritos
                 FavoritosDatabaseHelper dbHelper = new FavoritosDatabaseHelper(this);
                 List<Movies> favoritosList = dbHelper.getFavoritos();
+
+                buttonShare = findViewById(R.id.buttonShare);
 
                 if (favoritosList.isEmpty()) {
                     recyclerViewFavoritos.setVisibility(View.GONE);
                     textViewEmpty.setVisibility(View.VISIBLE);
+                    if (buttonShare != null) buttonShare.setVisibility(View.GONE);
                 } else {
                     recyclerViewFavoritos.setVisibility(View.VISIBLE);
                     textViewEmpty.setVisibility(View.GONE);
+                    if (buttonShare != null) buttonShare.setVisibility(View.VISIBLE);
 
                     MoviesAdapter adapter = new MoviesAdapter(this, favoritosList);
                     recyclerViewFavoritos.setAdapter(adapter);
 
-                    // Cambiar a un diseño de lista (una sola columna)
                     recyclerViewFavoritos.setLayoutManager(new LinearLayoutManager(this));
+
+                    buttonShare.setOnClickListener(v -> {
+                        if (favoritosList.isEmpty()) {
+                            Toast.makeText(this, "No hay películas favoritas para compartir.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String favoritosJson = generarJsonDeFavoritos(favoritosList);
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setTitle("Películas Favoritas en JSON");
+
+                            TextView textView = new TextView(this);
+                            textView.setText(favoritosJson);
+                            textView.setPadding(16, 16, 16, 16);
+                            textView.setTextIsSelectable(true);
+                            builder.setView(textView);
+
+                            builder.setPositiveButton("CERRAR", (dialog, which) -> dialog.dismiss());
+
+                            builder.create().show();
+                        }
+                    });
                 }
 
                 if (getSupportActionBar() != null) {
@@ -158,14 +182,27 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Mostrando Favoritos", Toast.LENGTH_SHORT).show();
             }
 
-            // Cerrar el menú lateral
             drawer.closeDrawer(GravityCompat.START);
             return true;
         });
+    }
 
-
-
-
+    private String generarJsonDeFavoritos(List<Movies> favoritosList) {
+        JSONArray jsonArray = new JSONArray();
+        try {
+            for (Movies movie : favoritosList) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", movie.getId());
+                jsonObject.put("title", movie.getName());
+                jsonObject.put("posterUrl", movie.getImageUrl());
+                jsonObject.put("rating", movie.getRating());
+                jsonObject.put("overview", movie.getPlot());
+                jsonArray.put(jsonObject);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonArray.toString();
     }
 
 
@@ -242,8 +279,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
