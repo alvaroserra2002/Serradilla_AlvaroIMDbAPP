@@ -10,8 +10,30 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        android:scrollbars="vertical"
+        android:visibility="visible"
         tools:listitem="@layout/item_movie" />
+
+        <!-- RecyclerView para mostrar las películas favoritas -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewFavoritos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            tools:listitem="@layout/item_movie" />
+
+        <!-- Texto que se muestra cuando no hay películas favoritas -->
+        <TextView
+            android:id="@+id/textViewEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aquí se mostrarán tus películas favoritas"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
