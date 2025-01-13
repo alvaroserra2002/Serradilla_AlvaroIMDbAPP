@@ -27,6 +27,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+  //MoviesAdapter es un adaptador para poblar un RecyclerView con una lista de películas.
+  //Proporciona interacciones como clics y clics largos para ver detalles o agregar/eliminar favoritos.
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
     private final List<Movies> moviesList;

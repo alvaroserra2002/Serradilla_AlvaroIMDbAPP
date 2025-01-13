@@ -17,6 +17,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+
+  //SearchMoviesAdapter es un adaptador personalizado para mostrar una lista de películas
+  //obtenidas a través de la búsqueda en un RecyclerView.
+
+
 public class SearchMoviesAdapter extends RecyclerView.Adapter<SearchMoviesAdapter.MovieViewHolder> {
 
     private final Context context;

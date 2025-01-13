@@ -12,6 +12,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.serradilla_alvaroimdbapp.databinding.FragmentSlideshowBinding;
 
+
+  //La clase `SlideshowFragment` representa una pantalla de la aplicación
+  //que utiliza un ViewModel para manejar datos observables relacionados con este fragmento.
+
+
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;

@@ -3,6 +3,12 @@ package com.example.serradilla_alvaroimdbapp.api;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+
+  //Clase ApiClient que proporciona instancias configuradas de Retrofit
+  //para interactuar con diferentes APIs.
+
+
 public class ApiClient {
 
     private static final String BASE_URL = "https://imdb-com.p.rapidapi.com/";

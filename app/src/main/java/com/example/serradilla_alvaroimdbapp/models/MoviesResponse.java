@@ -2,6 +2,11 @@ package com.example.serradilla_alvaroimdbapp.models;
 
 import java.util.List;
 
+
+  //Clase modelo para manejar la respuesta de la API que proporciona datos sobre películas.
+  //Esta clase está estructurada para coincidir con el formato de la respuesta JSON de la API.
+
+
 public class MoviesResponse {
     private Data data;
 

@@ -1,5 +1,10 @@
 package com.example.serradilla_alvaroimdbapp.models;
 
+
+  //Clase que representa una película.
+  //Contiene detalles como el ID, nombre, calificación, imagen y trama.
+
+
 public class Movies {
     private String id;
     private String name;

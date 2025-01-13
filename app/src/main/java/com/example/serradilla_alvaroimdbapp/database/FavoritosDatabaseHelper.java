@@ -12,6 +12,11 @@ import com.example.serradilla_alvaroimdbapp.models.Movies;
 import java.util.ArrayList;
 import java.util.List;
 
+
+  //Helper para manejar la base de datos de favoritos usando SQLite.
+  //Esta clase proporciona métodos para agregar, eliminar y recuperar películas favoritas.
+
+
 public class FavoritosDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favoritos.db";

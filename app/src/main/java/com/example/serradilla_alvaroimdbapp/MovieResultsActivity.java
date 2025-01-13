@@ -13,7 +13,12 @@ import com.example.serradilla_alvaroimdbapp.models.SearchMovieResponse;
 
 import java.util.ArrayList;
 
-public class MovieResultsActivity extends AppCompatActivity {
+/**
+ * MovieResultsActivity se encarga de mostrar los resultados de búsqueda de películas.
+ * Recibe una lista de películas desde un intent y las muestra en un RecyclerView utilizando un adaptador.
+ */
+
+ public class MovieResultsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewMovies;
 

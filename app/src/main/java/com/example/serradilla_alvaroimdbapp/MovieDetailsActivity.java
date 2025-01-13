@@ -18,6 +18,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * MovieDetailsActivity muestra los detalles de una película seleccionada.
+ * Obtiene la información desde una API remota (usando Retrofit) e incluye una opción para compartir
+ * la información de la película a través de un mensaje SMS.
+ *
+ * Funcionalidades:
+ * - Obtener detalles como título, trama, fecha de lanzamiento, valoración y póster de una película usando su ID.
+ * - Mostrar los detalles en una interfaz de usuario bien organizada.
+ * - Proveer un botón para enviar un SMS con información básica de la película.
+ */
+
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String API_KEY = "c2db7f170cmshc359159455b553fp1f3c95jsn36bf0b9aac41";

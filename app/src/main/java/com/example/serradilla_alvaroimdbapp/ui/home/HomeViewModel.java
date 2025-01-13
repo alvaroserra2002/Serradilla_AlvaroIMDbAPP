@@ -8,6 +8,12 @@ import com.example.serradilla_alvaroimdbapp.models.Movies;
 
 import java.util.List;
 
+
+  //La clase `HomeViewModel` es un modelo de vista (ViewModel) utilizado para
+  //manejar los datos del fragmento de inicio (`HomeFragment`) de manera reactiva y desacoplada.
+  //Proporciona un medio para observar y actualizar la lista de películas (`Movies`) en la interfaz de usuario.
+
+
 public class HomeViewModel extends ViewModel {
 
     private final MutableLiveData<List<Movies>> moviesLiveData;

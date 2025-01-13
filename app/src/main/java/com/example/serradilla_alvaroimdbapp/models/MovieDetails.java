@@ -2,6 +2,11 @@ package com.example.serradilla_alvaroimdbapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
+
+  //Clase que representa los detalles de una película obtenidos desde una API.
+  //Diseñada para mapear la estructura del JSON de respuesta usando Json.
+
+
 public class MovieDetails {
 
     @SerializedName("data")

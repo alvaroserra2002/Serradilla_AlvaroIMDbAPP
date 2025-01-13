@@ -45,6 +45,13 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * MainActivity es la actividad principal de la aplicación que gestiona la navegación entre diferentes fragmentos
+ * (Inicio, Favoritos, Buscar Películas, etc.) y funciones principales como la autenticación con Google,
+ * la búsqueda de películas, la visualización de las mejores películas, y el manejo de favoritos.
+ * Proporciona una barra de navegación y un diseño de menú lateral para facilitar la interacción del usuario.
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -215,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
         String apiKey = "TU_API_KEY";
         String language = "es-ES";
         int page = 1;
-
         Call<SearchMovieResponse> call = apiService.searchMovies(apiKey, year, String.valueOf(genreId), page, language);
         call.enqueue(new retrofit2.Callback<SearchMovieResponse>() {
             @Override
@@ -234,16 +240,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error al buscar películas.", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<SearchMovieResponse> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Fallo en la conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
-
     private void showSearchMoviesView() {
         recyclerViewTop10.setVisibility(View.GONE);
         recyclerViewFavoritos.setVisibility(View.GONE);

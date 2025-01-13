@@ -26,6 +26,11 @@ import retrofit2.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+  //La clase `HomeFragment` es responsable de mostrar las películas principales en la pantalla principal de la aplicación. Utiliza un `RecyclerView` para mostrar una lista de películas en un diseño de cuadrícula.
+
+
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -42,7 +47,7 @@ public class HomeFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.recyclerView);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columnas
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         moviesList = new ArrayList<>();
 
@@ -91,8 +96,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-
 }
 
 

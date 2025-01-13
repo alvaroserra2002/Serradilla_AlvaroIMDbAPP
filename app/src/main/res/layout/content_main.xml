@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
-
     <fragment
         android:id="@+id/nav_host_fragment_content_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -17,7 +16,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
-
     <Button
         android:id="@+id/buttonShare"
         android:layout_width="wrap_content"
@@ -30,13 +28,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/searchMoviesLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -49,7 +45,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
         <EditText
             android:id="@+id/etYear"
             android:layout_width="0dp"
@@ -60,8 +55,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-
         <Spinner
             android:id="@+id/spGenre"
             android:layout_width="0dp"
@@ -70,8 +63,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etYear"
             android:layout_marginTop="16dp" />
-
-
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"

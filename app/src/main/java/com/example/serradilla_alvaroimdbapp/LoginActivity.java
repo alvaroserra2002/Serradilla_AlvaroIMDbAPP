@@ -14,6 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 
+
+  //Clase LoginActivity gestiona el flujo de autenticación mediante Google.
+
 public class LoginActivity extends AppCompatActivity {
 
     private GoogleSignInClient googleSignInClient;

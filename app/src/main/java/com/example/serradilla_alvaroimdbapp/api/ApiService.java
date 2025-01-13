@@ -9,6 +9,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
 
+
+  //Interfaz ApiService define las llamadas a los endpoints de las APIs IMDb y TMDb.
+  //Cada método representa una solicitud HTTP específica.
+
 public interface ApiService {
 
     @GET("title/get-top-meter")

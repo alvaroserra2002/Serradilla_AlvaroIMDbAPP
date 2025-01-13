@@ -12,6 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.serradilla_alvaroimdbapp.databinding.FragmentGalleryBinding;
 
+
+  //Clase que representa el fragmento para la sección "Gallery".
+  //Se utiliza junto con un ViewModel para gestionar los datos de UI relacionados.
+
 public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;

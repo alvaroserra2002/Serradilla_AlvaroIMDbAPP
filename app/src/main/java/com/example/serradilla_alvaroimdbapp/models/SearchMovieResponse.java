@@ -7,6 +7,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+
+  //Clase modelo para manejar la respuesta de la API de búsqueda de películas (TMDb).
+  //La clase utiliza Json para mapear automáticamente los campos del JSON a objetos Java.
+
+
 public class SearchMovieResponse {
 
     @SerializedName("results")
