@@ -2,6 +2,7 @@ package com.example.serradilla_alvaroimdbapp.api;
 
 import com.example.serradilla_alvaroimdbapp.models.MovieDetails;
 import com.example.serradilla_alvaroimdbapp.models.MoviesResponse;
+import com.example.serradilla_alvaroimdbapp.models.SearchMovieResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -25,6 +26,14 @@ public interface ApiService {
             @Query("tconst") String tconst
     );
 
+    @GET("discover/movie")
+    Call<SearchMovieResponse> searchMovies(
+            @Query("api_key") String apiKey,
+            @Query("year") int year,
+            @Query("with_genres") String genre,
+            @Query("page") int page,
+            @Query("language") String language
+    );
 
 
 }

@@ -37,9 +37,8 @@
             android:name=".MovieDetailsActivity"
             android:theme="@style/Theme.Serradilla_AlvaroIMDbAPP" />
 
-        <activity
-            android:name=".FavoritosActivity"
-            android:theme="@style/Theme.Serradilla_AlvaroIMDbAPP.NoActionBar" />
+        <activity android:name="com.example.serradilla_alvaroimdbapp.SearchMoviesActivity" />
+
 
     </application>
 

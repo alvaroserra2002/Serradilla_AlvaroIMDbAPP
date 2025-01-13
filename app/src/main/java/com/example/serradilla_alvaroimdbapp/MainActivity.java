@@ -3,24 +3,29 @@ package com.example.serradilla_alvaroimdbapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.serradilla_alvaroimdbapp.adapters.MoviesAdapter;
+import com.example.serradilla_alvaroimdbapp.api.ApiClient;
+import com.example.serradilla_alvaroimdbapp.api.ApiService;
 import com.example.serradilla_alvaroimdbapp.database.FavoritosDatabaseHelper;
 import com.example.serradilla_alvaroimdbapp.models.Movies;
 import com.example.serradilla_alvaroimdbapp.models.MoviesResponse;
+import com.example.serradilla_alvaroimdbapp.models.SearchMovieResponse;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,19 +39,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.serradilla_alvaroimdbapp.databinding.ActivityMainBinding;
 import com.squareup.picasso.Picasso;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.example.serradilla_alvaroimdbapp.api.ApiClient;
-import com.example.serradilla_alvaroimdbapp.api.ApiService;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,17 +51,28 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private GoogleSignInClient googleSignInClient;
 
-    private static final String API_KEY = "c2db7f170cmshc359159455b553fp1f3c95jsn36bf0b9aac41";
-    private static final String API_HOST = "imdb-com.p.rapidapi.com";
+    private RecyclerView recyclerViewTop10, recyclerViewFavoritos;
+    private View searchMoviesView;
+    private Button buttonShare, btnSearch;
+    private Spinner spGenre;
+    private TextView etYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        callTopMeterEndpoint();
+        recyclerViewTop10 = findViewById(R.id.recyclerView);
+        recyclerViewFavoritos = findViewById(R.id.recyclerViewFavoritos);
+        searchMoviesView = findViewById(R.id.searchMoviesLayout);
+        buttonShare = findViewById(R.id.buttonShare);
+        spGenre = findViewById(R.id.spGenre);
+        etYear = findViewById(R.id.etYear);
+        btnSearch = findViewById(R.id.btnSearch);
+
+        setupGenreSpinner();
+        setupSearchButton();
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -106,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> logout());
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.fav)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.fav, R.id.nav_search_movies)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -117,69 +124,12 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            RecyclerView recyclerViewTop10 = findViewById(R.id.recyclerView);
-            RecyclerView recyclerViewFavoritos = findViewById(R.id.recyclerViewFavoritos);
-            TextView textViewEmpty = findViewById(R.id.textViewEmpty);
-            Button buttonShare = findViewById(R.id.buttonShare);
-
             if (id == R.id.nav_home) {
-                recyclerViewTop10.setVisibility(View.VISIBLE);
-                recyclerViewFavoritos.setVisibility(View.GONE);
-                textViewEmpty.setVisibility(View.GONE);
-                buttonShare.setVisibility(View.GONE);
-
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle("Top 10");
-                }
-                Toast.makeText(this, "Cargando Top 10", Toast.LENGTH_SHORT).show();
+                showTop10View();
             } else if (id == R.id.fav) {
-                recyclerViewTop10.setVisibility(View.GONE);
-
-                FavoritosDatabaseHelper dbHelper = new FavoritosDatabaseHelper(this);
-                List<Movies> favoritosList = dbHelper.getFavoritos();
-
-                buttonShare = findViewById(R.id.buttonShare);
-
-                if (favoritosList.isEmpty()) {
-                    recyclerViewFavoritos.setVisibility(View.GONE);
-                    textViewEmpty.setVisibility(View.VISIBLE);
-                    if (buttonShare != null) buttonShare.setVisibility(View.GONE);
-                } else {
-                    recyclerViewFavoritos.setVisibility(View.VISIBLE);
-                    textViewEmpty.setVisibility(View.GONE);
-                    if (buttonShare != null) buttonShare.setVisibility(View.VISIBLE);
-
-                    MoviesAdapter adapter = new MoviesAdapter(this, favoritosList);
-                    recyclerViewFavoritos.setAdapter(adapter);
-
-                    recyclerViewFavoritos.setLayoutManager(new LinearLayoutManager(this));
-
-                    buttonShare.setOnClickListener(v -> {
-                        if (favoritosList.isEmpty()) {
-                            Toast.makeText(this, "No hay películas favoritas para compartir.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            String favoritosJson = generarJsonDeFavoritos(favoritosList);
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                            builder.setTitle("Películas Favoritas en JSON");
-
-                            TextView textView = new TextView(this);
-                            textView.setText(favoritosJson);
-                            textView.setPadding(16, 16, 16, 16);
-                            textView.setTextIsSelectable(true);
-                            builder.setView(textView);
-
-                            builder.setPositiveButton("CERRAR", (dialog, which) -> dialog.dismiss());
-
-                            builder.create().show();
-                        }
-                    });
-                }
-
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle("Favoritos");
-                }
-                Toast.makeText(this, "Mostrando Favoritos", Toast.LENGTH_SHORT).show();
+                showFavoritesView();
+            } else if (id == R.id.nav_search_movies) {
+                showSearchMoviesView();
             }
 
             drawer.closeDrawer(GravityCompat.START);
@@ -187,25 +137,123 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String generarJsonDeFavoritos(List<Movies> favoritosList) {
-        JSONArray jsonArray = new JSONArray();
-        try {
-            for (Movies movie : favoritosList) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", movie.getId());
-                jsonObject.put("title", movie.getName());
-                jsonObject.put("posterUrl", movie.getImageUrl());
-                jsonObject.put("rating", movie.getRating());
-                jsonObject.put("overview", movie.getPlot());
-                jsonArray.put(jsonObject);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void setupGenreSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.genres,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spGenre.setAdapter(adapter);
+    }
+
+    private void showTop10View() {
+        recyclerViewTop10.setVisibility(View.VISIBLE);
+        recyclerViewFavoritos.setVisibility(View.GONE);
+        searchMoviesView.setVisibility(View.GONE);
+        buttonShare.setVisibility(View.GONE);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Top 10");
         }
-        return jsonArray.toString();
+        Toast.makeText(this, "Cargando Top 10", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showFavoritesView() {
+        recyclerViewTop10.setVisibility(View.GONE);
+        searchMoviesView.setVisibility(View.GONE);
+
+        FavoritosDatabaseHelper dbHelper = new FavoritosDatabaseHelper(this);
+        List<Movies> favoritosList = dbHelper.getFavoritos();
+
+        if (favoritosList.isEmpty()) {
+            recyclerViewFavoritos.setVisibility(View.GONE);
+            Toast.makeText(this, "No hay favoritos", Toast.LENGTH_SHORT).show();
+        } else {
+            recyclerViewFavoritos.setVisibility(View.VISIBLE);
+            MoviesAdapter adapter = new MoviesAdapter(this, favoritosList);
+            recyclerViewFavoritos.setAdapter(adapter);
+            recyclerViewFavoritos.setLayoutManager(new LinearLayoutManager(this));
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Favoritos");
+        }
+    }
+
+    private void setupSearchButton() {
+        btnSearch.setOnClickListener(v -> {
+            String yearText = etYear.getText().toString().trim();
+            if (yearText.isEmpty()) {
+                Toast.makeText(this, "Por favor, introduce un año.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int year;
+            try {
+                year = Integer.parseInt(yearText);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Por favor, introduce un año válido.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int genreIndex = spGenre.getSelectedItemPosition();
+            int[] genreIds = getResources().getIntArray(R.array.genres);
+            if (genreIndex < 0 || genreIndex >= genreIds.length) {
+                Toast.makeText(this, "Por favor, selecciona un género.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int genreId = genreIds[genreIndex];
+
+            performMovieSearch(year, genreId);
+        });
+    }
+
+    private void performMovieSearch(int year, int genreId) {
+        ApiService apiService = ApiClient.getTmdbClient().create(ApiService.class);
+        String apiKey = "TU_API_KEY";
+        String language = "es-ES";
+        int page = 1;
+
+        Call<SearchMovieResponse> call = apiService.searchMovies(apiKey, year, String.valueOf(genreId), page, language);
+        call.enqueue(new retrofit2.Callback<SearchMovieResponse>() {
+            @Override
+            public void onResponse(Call<SearchMovieResponse> call, Response<SearchMovieResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<SearchMovieResponse.MovieResult> movies = response.body().getResults();
+
+                    if (movies.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "No se encontraron películas.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(MainActivity.this, MovieResultsActivity.class);
+                        intent.putParcelableArrayListExtra("movies", new ArrayList<>(movies));
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Error al buscar películas.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchMovieResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Fallo en la conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
+
+    private void showSearchMoviesView() {
+        recyclerViewTop10.setVisibility(View.GONE);
+        recyclerViewFavoritos.setVisibility(View.GONE);
+        searchMoviesView.setVisibility(View.VISIBLE);
+        buttonShare.setVisibility(View.GONE);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Buscar Película");
+        }
+    }
 
     private void logout() {
         googleSignInClient.signOut().addOnCompleteListener(task -> {
@@ -214,49 +262,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
     }
-
-    private void callTopMeterEndpoint() {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-
-        Call<MoviesResponse> call = apiService.getTopMeter(API_KEY, API_HOST, "ALL", 10);
-
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<MoviesResponse.Edge> edges = response.body().getData().getTopMeterTitles().getEdges();
-
-                    for (MoviesResponse.Edge edge : edges) {
-                        MoviesResponse.Node node = edge.getNode();
-
-                        String title = node.getTitleText().getText();
-                        int releaseYear = node.getReleaseYear().getYear();
-                        String imageUrl = node.getPrimaryImage().getUrl();
-
-                        Log.d("MOVIE", "Name: " + title +
-                                ", Release Year: " + releaseYear +
-                                ", Image URL: " + imageUrl);
-
-                    }
-
-                    Toast.makeText(MainActivity.this, "Películas recibidas correctamente", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("API_ERROR", "Error en la respuesta: " + response.message());
-                    Toast.makeText(MainActivity.this, "Error en la respuesta", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                Log.e("API_FAILURE", "Error en la llamada: " + t.getMessage());
-                Toast.makeText(MainActivity.this, "Error en la llamada", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -270,17 +276,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.fav) {
-            Intent intent = new Intent(this, FavoritosActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }
+
 

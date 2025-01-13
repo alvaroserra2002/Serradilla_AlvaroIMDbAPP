@@ -84,7 +84,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private void sendSms() {
         String message = "Esta película te gustará: " + movieName + ". Valoración: " + movieRating;
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-        smsIntent.setData(Uri.parse("sms:")); // Deja vacío para que el usuario elija el contacto
+        smsIntent.setData(Uri.parse("sms:"));
         smsIntent.putExtra("sms_body", message);
 
         try {

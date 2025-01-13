@@ -24,15 +24,6 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
-    <Button
-        android:id="@+id/buttonShare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Compartir"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        android:visibility="visible" />
-
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
